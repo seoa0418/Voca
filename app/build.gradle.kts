@@ -61,5 +61,5 @@ dependencies {
     implementation("androidx.compose.material3:material3")
 
     // Material 3 아이콘을 사용하려면 이 줄도 추가하는 것이 좋습니다.
-    implementation("androidx.compose.material3:material3-icons-extended:1.6.7")
+  //  implementation("androidx.compose.material3:material3-icons-extended:1.6.7")
 }
