@@ -57,9 +57,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // ✨ Material 3 추가 (필수)
+    //Material 3 추가 (필수)
     implementation("androidx.compose.material3:material3")
+    //Retrofit (네트워크 통신 라이브러리)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    //Moshi (JSON 파싱 라이브러리)
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
 
-    // Material 3 아이콘을 사용하려면 이 줄도 추가하는 것이 좋습니다.
-  //  implementation("androidx.compose.material3:material3-icons-extended:1.6.7")
+    //ViewModel (AAC ViewModel 라이브러리)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
 }

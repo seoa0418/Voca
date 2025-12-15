@@ -11,12 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.voca.ui.theme.VocaTheme
-
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Color
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,131 +22,165 @@ class MainActivity : ComponentActivity() {
         setContent {
             VocaTheme {
                 // 앱의 메인 화면 Composable 함수 호출
+                // viewModel() 함수가 ViewModel의 생명주기를 관리해줍니다.
                 VocabularyScreen()
             }
         }
     }
 }
 
-/**
- * 💡 핵심 로직: 단어 학습 화면
- * 상태 관리를 통해 현재 단어, 인덱스, 뜻 표시 여부를 제어합니다.
- */
+
+@Composable
+fun VocabularyScreen(wordViewModel: WordViewModel = viewModel()) {
+    // ViewModel로부터 UI 상태를 가져옵니다.
+    val uiState = wordViewModel.uiState
+    // ViewModel의 함수를 이벤트 핸들러로 전달합니다.
+    val fetchNextWord = { wordViewModel.fetchNextWord() }
+
+    // 실제 UI를 그리는 부분은 VocabularyContent에 위임합니다.
+    VocabularyContent(
+        uiState = uiState,
+        onFetchNextWord = fetchNextWord
+    )
+}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
-fun VocabularyScreen() {
-    // 현재 단어의 인덱스를 저장하는 상태 변수. remember를 사용하여 Composable이 리컴포지션 되어도 값이 유지됨.
-    var currentIndex by remember { mutableStateOf(0) }
-    // 현재 단어의 뜻이 표시되어야 하는지 여부를 저장하는 상태 변수
-    var showMeaning by remember { mutableStateOf(false) }
+fun VocabularyContent(
+    uiState: WordUiState,
+    onFetchNextWord: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var showMeaning by remember(uiState.english) { mutableStateOf(false) }
 
-    // 단어 목록의 크기
-    val totalWords = wordList.size
-
-    // 현재 표시할 단어
-    val currentWord = wordList[currentIndex]
-
+    // Scaffold의 containerColor를 MaterialTheme.colorScheme.background로 설정하여 배경색 적용
     Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Voca - 영단어 학습") })
-        }
+        containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween // 내용물 사이의 공간을 균등하게 분배
+            verticalArrangement = Arrangement.Center
         ) {
-            // 1. 단어 및 뜻 영역
-            WordDisplay(
-                word = currentWord,
-                showMeaning = showMeaning,
-                modifier = Modifier.weight(1f) // 남은 공간을 최대한 차지
-            )
+            when {
+                uiState.isLoading -> { /* 로딩 UI */ }
+                uiState.errorMessage != null -> { /* 에러 UI */ }
+                else -> {
+                    // 단어 표시 영역 (수정)
+                    WordDisplay(
+                        english = uiState.english,
+                        korean = uiState.korean,
+                        showMeaning = showMeaning,
+                        modifier = Modifier.weight(1f) // 남은 공간을 모두 차지
+                    )
 
-            // 2. 버튼 영역
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                horizontalArrangement = Arrangement.SpaceAround // 버튼 사이에 공간을 균등하게 배치
-            ) {
-                // 뜻 보기/숨기기 버튼
-                Button(
-                    onClick = { showMeaning = !showMeaning }, // 상태 반전
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(if (showMeaning) "뜻 숨기기" else "뜻 보기")
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                // 다음 단어 버튼
-                Button(
-                    onClick = {
-                        // 다음 단어로 이동 (순환)
-                        currentIndex = (currentIndex + 1) % totalWords
-                        // 단어가 바뀌면 뜻은 다시 숨김
-                        showMeaning = false
-                    },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("다음 단어")
+                    // 버튼 영역
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        // ✨ 버튼에 테마 색상이 자동으로 적용됩니다.
+                        Button(
+                            onClick = { showMeaning = !showMeaning },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(50.dp) // 버튼 높이 지정
+                        ) {
+                            Text(if (showMeaning) "뜻 숨기기" else "뜻 보기")
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Button(
+                            onClick = onFetchNextWord,
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(50.dp)
+                        ) {
+                            Text("다음 단어")
+                        }
+                    }
                 }
             }
+        }
+    }
+}
 
-            // 3. 현재 진행 상황
+
+@Composable
+fun WordDisplay(
+    english: String,
+    korean: String,
+    showMeaning: Boolean,
+    modifier: Modifier = Modifier
+) {
+    // ✨ Card Composable을 사용하여 UI 구성
+    Card(
+        modifier = modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp), // 모서리를 16dp 만큼 둥글게
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface // 카드 배경색 (흰색)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp) // 약간의 그림자 효과
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(), // 카드를 꽉 채움
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            // 영어 단어
             Text(
-                text = "${currentIndex + 1} / $totalWords",
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(top = 8.dp)
+                text = english,
+                style = MaterialTheme.typography.displayLarge,
+                color = MaterialTheme.colorScheme.onSurface // onSurface (검은색)
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // 한국어 뜻
+            Text(
+                text = if (showMeaning) korean else "???",
+                style = MaterialTheme.typography.headlineMedium,
+                // 뜻이 보일 때는 primary(핑크), 안 보일 때는 회색 계열로
+                color = if (showMeaning) MaterialTheme.colorScheme.primary else Color.Gray
             )
         }
     }
 }
 
-/**
- * 영어 단어와 뜻을 표시하는 Composable
- */
+
+@Preview(showBackground = true, name = "Default Preview")
 @Composable
-fun WordDisplay(word: Word, showMeaning: Boolean, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        // 영어 단어 (항상 표시)
-        Text(
-            text = word.english,
-            fontSize = 48.sp,
-            style = MaterialTheme.typography.displayLarge
+fun VocabularyScreenPreview() {
+    VocaTheme {
+        // ViewModel 대신 가짜 WordUiState를 만들어 VocabularyContent에 전달
+        val fakeUiState = WordUiState(
+            english = "Preview",
+            korean = "미리보기 단어의 뜻입니다. 이렇게 길어질 수 있습니다.",
+            isLoading = false,
+            errorMessage = null
         )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // 한국어 뜻 (showMeaning 상태에 따라 표시)
-        Text(
-            text = if (showMeaning) word.korean else "???",
-            fontSize = 32.sp,
-            color = if (showMeaning) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+        VocabularyContent(
+            uiState = fakeUiState,
+            onFetchNextWord = {} // 프리뷰에서는 아무 동작 안 함
         )
     }
 }
 
 
-/**
- * 🖼️ 프리뷰 구성
- * 이 코드를 통해 Android Studio 디자인 창에서 실행하지 않고도 화면을 미리 볼 수 있습니다.
- */
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Loading Preview")
 @Composable
-fun VocabularyScreenPreview() {
+fun VocabularyLoadingPreview() {
     VocaTheme {
-        VocabularyScreen()
+        val loadingState = WordUiState(isLoading = true)
+        VocabularyContent(
+            uiState = loadingState,
+            onFetchNextWord = {}
+        )
     }
 }
