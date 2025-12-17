@@ -3,7 +3,7 @@
     </div>
     <div align= "center"> 
     <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 컴퓨터공학전공 김서아 기말 프로젝트 </h2>  
-    <div style="font-weight: 700; font-size: 15px; text-align: center; color: #282d33;"> 나만의 영단어 앱 </div> 
+    <div style="font-weight: 700; font-size: 15px; text-align: center; color: #282d33;"> 나만의 영단어 공부 앱 </div> 
     </div>
     <div align= "center">
     <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 🛠️ Tech Stacks </h2> <br> 
@@ -24,6 +24,7 @@
 ---
 
 ## 나만의 영단어 공부 앱
+<img width="266" height="592" alt="image" src="https://github.com/user-attachments/assets/630a2102-4745-4a62-870c-9f08f05aa7f6" />
 
  ---
  
