@@ -152,6 +152,7 @@ Voca는 영어 단어를 무작위로 하나씩 제시하고,
 처음에는 뜻이 보이지 않습니다.
 
 사용자가 버튼을 눌러 직접 확인할 수 있는 구조입니다.
+<img width="263" height="592" alt="image" src="https://github.com/user-attachments/assets/711bf44a-e842-4570-b2b2-90972ffaa813" />
 
 단어가 바뀌면 다시 뜻 숨김 상태로 초기화됩니다.
 
@@ -227,6 +228,7 @@ API 호출 결과는 WordUiState에 저장되고,
 
 ## UI 설계 의도
 
+<img width="263" height="592" alt="image" src="https://github.com/user-attachments/assets/435b5578-2048-4ead-a9cc-952d5826ec71" />
 
 #### - 카드(Card) UI로 단어를 강조
 
