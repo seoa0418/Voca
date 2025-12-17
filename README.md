@@ -181,16 +181,18 @@ GET 방식으로 쿼리 파라미터를 전달합니다.
 
 이를 해결하기 위해
 
-#### Coroutine
+### Coroutine
 
-#### viewModelScope
+### viewModelScope
 
 를 사용하여 비동기 처리를 구현했습니다!
 
+--
 viewModelScope.launch {
     // API 호출
     // 결과를 UI 상태로 반영
 }
+--
 
 
 API 호출 결과는 WordUiState에 저장되고,
