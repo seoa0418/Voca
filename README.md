@@ -148,11 +148,11 @@ Voca는 영어 단어를 무작위로 하나씩 제시하고,
 
 
 ### 2 뜻 숨기기 / 보기 기능
+<img width="265" height="592" alt="image" src="https://github.com/user-attachments/assets/40c2ead0-2aac-49b2-8f24-aaa85ff8c324" /><img width="263" height="592" alt="image" src="https://github.com/user-attachments/assets/711bf44a-e842-4570-b2b2-90972ffaa813" />
 
 처음에는 뜻이 보이지 않습니다.
 
 사용자가 버튼을 눌러 직접 확인할 수 있는 구조입니다.
-<img width="263" height="592" alt="image" src="https://github.com/user-attachments/assets/711bf44a-e842-4570-b2b2-90972ffaa813" />
 
 단어가 바뀌면 다시 뜻 숨김 상태로 초기화됩니다.
 
