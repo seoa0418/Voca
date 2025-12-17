@@ -43,11 +43,10 @@ interface DictionaryApiService {
 private const val TRANSLATE_BASE_URL = "https://api.mymemory.translated.net/"
 
 interface TranslationApiService {
-    // GET 요청 예시: /get?q=hello&langpair=en|ko
     @GET("get")
     suspend fun translate(
         @Query("q") textToTranslate: String,
-        @Query("langpair") languagePair: String = "en|ko" // 영어(en)를 한국어(ko)로
+        @Query("langpair") languagePair: String = "en|ko"
     ): TranslationResponse
 }
 
