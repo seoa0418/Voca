@@ -67,8 +67,10 @@ Voca는 영어 단어를 무작위로 하나씩 제시하고,
 
 
 ### - 단어를 바로 보여주지 않고 뜻을 숨기는 학습 구조
+<img width="164" height="109" alt="image" src="https://github.com/user-attachments/assets/2bee349f-43a7-461a-991b-3ac7f7a966dc" />
 
 ### - 버튼 클릭으로 사용자가 학습 흐름을 직접 조절
+<img width="244" height="50" alt="image" src="https://github.com/user-attachments/assets/1fcdc346-35eb-4e08-90d0-20e5459defe1" />
 
 ### - 랜덤 단어 선택으로 매번 다른 학습 경험 제공
 
